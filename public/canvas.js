@@ -1,5 +1,4 @@
 const canvas = document.getElementById('canvas');
-canvas.style.border = '2px dotted green';
 const c = canvas.getContext('2d');
 
 c.strokeStyle = '#383428';
