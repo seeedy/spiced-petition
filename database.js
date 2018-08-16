@@ -13,15 +13,13 @@ module.exports.newSigner = function(first, last, signature) {
     // CHECK IF FIRSTNAME/LASTNAME ALREADY EXISTS FIRST?
 
     // insert new Signer
-    return db
-        .query(
-            'INSERT INTO signers (first, last, signature) VALUES($1, $2, $3)',
-            [first || null, last || null, signature || null]
-        )
-        .then(({ rows }) => {
-            console.log(rows);
-        })
-        .catch(err => {
-            console.log(err);
-        });
+    return db.query(
+        'INSERT INTO signers (first, last, signature) VALUES($1, $2, $3) RETURNING id',
+        [first || null, last || null, signature || null]
+    );
+};
+
+module.exports.getSigners = function() {
+    console.log('getting signers');
+    return db.query('SELECT * FROM signers');
 };

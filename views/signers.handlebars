@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+    </head>
+    <body>
+
+        {{>header }}
+
+        <div id="signers-box">
+            <h2>Thanks to all supporters:</h2>
+            {{#signers}}
+            <p>{{ first }} {{ last }}</p>
+            {{/signers}}
+        </div>
+
+    </body>
+</html>

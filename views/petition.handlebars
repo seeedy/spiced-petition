@@ -1,22 +1,37 @@
-<h1>Petition yo</h1>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+    </head>
+    <body>
 
-<div class="container">
-    <p>bla bla bla bla bla</p>
+        {{>header }}
 
+        <div id="container">
+            <p>bla bla bla bla bla</p>
 
-    <div class="form-box">
-
-        <form method="POST" autocomplete="off">
-            <input type="text" name="first" placeholder="first name ..."/>
-            <input type="text" name="last" placeholder="last name ..."/>
-            <input name="signature" id="signature" type="hidden" />
-            <canvas id="canvas" width="400" height="100"></canvas>
-            <input type="submit" id="submit-button" value="submit"/>
-</form>
-
-
-
+            {{#if error }}
+            <div id="error">Please fill in your first name, last name and signature to proceed!</div>
+            {{/if }}
 
 
-    </div>
-</div>
+
+            <div id="form-box">
+
+                <form method="POST" autocomplete="off">
+                    <input type="text" name="first" placeholder="first name ..."/>
+                    <input type="text" name="last" placeholder="last name ..."/>
+                    <input type="hidden" name="signature" id="signature"  />
+                    <p>Please sign here:</p>
+                    <canvas id="canvas" width="400" height="100"></canvas>
+                    <input type="submit" id="submit-button" value="submit"/>
+                    <!-- put this in every form !!! -->
+                    <input name="_csrf" value="{{csrfToken}}" type="hidden" />
+        </form>
+
+
+            </div>
+        </div>
+    </body>
+</html>
