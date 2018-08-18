@@ -31,16 +31,32 @@ h1 {
 
 #form-box {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 1rem;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.input-field {
+    border: solid 1px black;
+    height: 1.5rem;
+    text-align: center;
+}
+
+#reg-form,
+#login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-field {
+    margin-top: 1rem;
 }
 
 #canvas {
     display: block;
     background: transparent;
-    padding: 1rem 1rem;
     margin: 0 1rem;
     border-top-left-radius: 255px 15px;
     border-top-right-radius: 15px 225px;
@@ -49,7 +65,7 @@ h1 {
     border: solid 5px black;
 }
 
-#submit-button {
+.submit-button {
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 1.25rem;
     width: 220px;
@@ -60,7 +76,7 @@ h1 {
     transition: 0.5s ease-in;
 }
 
-#submit-button:hover {
+.submit-button:hover {
     background: teal;
     color: white;
 }

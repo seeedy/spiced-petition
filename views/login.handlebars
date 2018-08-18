@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+    </head>
+    <body>
+        <div id="container">
+
+            {{#if error }}
+            <div id="error">Something went wrong! Try again!</div>
+            {{/if }}
+
+            <div id="form-box">
+
+                <form id="login-form" method="POST" autocomplete="off">
+                    <input class="input-field" type="text" name="first" placeholder="email ..."/>
+                    <input class="input-field" type="text" name="last" placeholder="password ..."/><input type="submit" class="submit-button" value="login"/>
+                    <!-- put this in every form !!! -->
+                    <input name="_csrf" value="{{csrfToken}}" type="hidden" />
+                </form>
+
+            
+            </div>
+        </div>
+    </body>
+</html>

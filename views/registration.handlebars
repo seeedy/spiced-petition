@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+    </head>
+    <body>
+        <div id="container">
+
+            {{#if error }}
+            <div id="error">Something went wrong! Try again!</div>
+            {{/if }}
+
+            {{#if duplicateMail }}
+            <div id="error">This email address is already registered. Please <a href="/login">log in</a></div>
+            {{/if }}
+
+            <div id="form-box">
+
+                <form id="reg-form" method="POST" autocomplete="off">
+                    <input class="input-field" type="text" name="first" placeholder="first name ..."/>
+                    <input class="input-field" type="text" name="last" placeholder="last name ..."/>
+                    <input class="input-field" type="text" name="email" placeholder="email ..."/>
+                    <input class="input-field" type="text" name="password" placeholder="password ..."/><input type="submit" class="submit-button" value="sign up"/>
+                    <!-- put this in every form !!! -->
+                    <input name="_csrf" value="{{csrfToken}}" type="hidden" />
+                </form>
+
+            <div class="goto-login">
+                If you're already a member, please <a href="/login">log in</a>
+            </div>
+            </div>
+        </div>
+    </body>
+</html>

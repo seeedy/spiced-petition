@@ -92,3 +92,25 @@ db.query(q, params).then(results => {
 
 // ************ NOTES VULNERABILITIES ***************
 app.disable();
+
+// ************** NOTES PT3 **************
+
+// 1 new GET, 1 new POST route for register/login each
+// 1 new template for for each
+
+// new SQL table for users (key, first, last, email(unique), pass)
+
+// post route for setting pwd
+// hash password (+salt) and insert in table users
+// error msg on registration error (email already used)
+
+// after succesful reg, put userId in cookie
+// redirect to /petition
+
+// on login page compare req.password and session.userId
+// find id through email address
+// then check if user == signer already (get sigId by userId)
+// redirect accordingly
+// on login error show error msg
+
+// middleware to check if UserId exists and only allow register/login routes

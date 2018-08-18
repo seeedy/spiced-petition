@@ -33,30 +33,100 @@ app.use((req, res, next) => {
     next();
 });
 
-// get module for db queries
+// module for db queries
 const database = require('./database');
+// encryption module
+const bcrypt = require('./bcrypt');
 
-// ***************** ROUTES *******************************
-
-// middleware to check for session cookie
+// ************** MIDDLEWARE ***************************
+// function to check for session cookie
 function checkForSigId(req, res, next) {
     console.log('inside checkForSigId', req.session);
-    console.log(req.session);
     if (!req.session.sigId) {
         res.redirect('/');
     } else {
         next();
     }
 }
-// middleware to log all requests that are received
+
+function checkSessionUser(req, res, next) {
+    console.log('inside checkSessionUser', req.session);
+    if (req.session.user) {
+        res.redirect('/petition');
+    } else {
+        next();
+    }
+}
+// log all requests that are received ***DELETE LATER***
 app.use(function logUrl(req, res, next) {
     console.log(req.url);
     next();
 });
 
-// middleware to redirect to petition start page
+// redirect to petition start page ***CHANGE LATER***
 app.get('/', (req, res) => {
     res.redirect('/petition');
+});
+
+// ***************** ROUTES *******************************
+
+app.get('/registration', (req, res) => {
+    res.render('registration', {
+        layout: 'main'
+    });
+});
+
+app.post('/registration', checkSessionUser, (req, res) => {
+    let { first, last, email, password } = req.body;
+    console.log('req: ', first, last, email, password);
+    bcrypt.hashPass(password).then(function(hashedPass) {
+        console.log('promise from hashPass resolved: ', hashedPass);
+        database
+            .newUser(first, last, email, hashedPass)
+            .then((response, first, last) => {
+                console.log(response.rows[0].id);
+                req.session.user = {
+                    first: first,
+                    last: last,
+                    userId: response.rows[0].id
+                };
+                res.redirect('/petition');
+            })
+            .catch(err => {
+                console.log(err.constraint);
+                if (err.constraint == 'users_email_key') {
+                    res.render('registration', {
+                        layout: 'main',
+                        duplicateMail: true
+                    });
+                } else {
+                    res.render('registration', {
+                        layout: 'main',
+                        error: true
+                    });
+                }
+            });
+    });
+});
+
+app.get('/login', checkSessionUser, (req, res) => {
+    res.render('login', {
+        layout: 'main'
+    });
+});
+
+app.post('/login', (req, res) => {
+    let { email, password } = req.body;
+    bcrypt.hashPass(password).then(hashedPass => {
+        database.getUsers().then(response => {
+            console.log('getUsers: ', response.rows);
+            response.rows.forEach(user => {
+                if (email == user.email && hashedPass == user.password) {
+                    console.log('logging in');
+                }
+            });
+        });
+    });
 });
 
 app.get('/petition', (req, res) => {
@@ -69,23 +139,19 @@ app.post('/petition', (req, res) => {
     let { first, last, signature } = req.body;
     console.log('first: ', first, ' last: ', last, 'signature: ', signature);
     // CALL FUNCTION TO INSERT SIGNER INTO DB HERE
-    if (first && last && signature) {
-        database
-            .newSigner(first, last, signature)
-            .then(({ rows }) => {
-                console.log('response: ', rows[0].id);
-                req.session.sigId = rows[0].id;
-                res.redirect('/thanks');
-            })
-            .catch(err => {
-                console.log(err);
+    database
+        .newSigner(first, last, signature)
+        .then(({ rows }) => {
+            console.log('response: ', rows[0].id);
+            req.session.sigId = rows[0].id;
+            res.redirect('/thanks');
+        })
+        .catch(() => {
+            res.render('petition', {
+                layout: 'main',
+                error: true
             });
-    } else {
-        res.render('petition', {
-            layout: 'main',
-            error: true
         });
-    }
 });
 
 // Thank you page
