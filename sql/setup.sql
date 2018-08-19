@@ -15,5 +15,6 @@ CREATE TABLE signers (
     first VARCHAR(200) NOT NULL,
     last VARCHAR(255) NOT NULL,
     signature TEXT NOT NULL,
-    user_id INTEGER REFERENCES users(id) NOT NULL
+    user_id INTEGER REFERENCES users(id)
+    -- bugfix: does not work with not null
 );

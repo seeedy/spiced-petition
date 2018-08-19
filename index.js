@@ -47,11 +47,14 @@ function checkSessionUser(req, res, next) {
     } else {
         next();
     }
-} // function to check for session cookie
+}
+
 function checkForSigId(req, res, next) {
     console.log('inside checkForSigId', req.session);
     if (!req.session.sigId) {
-        res.redirect('/');
+        res.render('petition', {
+            layout: 'main'
+        });
     } else {
         next();
     }
@@ -115,7 +118,6 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
     let { email, password } = req.body;
-    console.log('pw: ', password);
     database
         .getUsers()
         .then(response => {
@@ -123,20 +125,18 @@ app.post('/login', (req, res) => {
             response.rows.forEach(user => {
                 if (email == user.email) {
                     match = 1;
-                    console.log('checking pw for ', user);
                     bcrypt
                         .checkPass(password, user.password)
                         .then(doesMatch => {
                             if (doesMatch) {
-                                console.log('right pw');
                                 req.session.user = {
                                     first: user.first,
                                     last: user.last,
                                     userId: user.id
                                 };
+                                console.log(req.session);
                                 res.redirect('/petition');
-                            } else if (!doesMatch) {
-                                console.log('wrong pw');
+                            } else {
                                 res.render('login', {
                                     layout: 'main',
                                     wrongPass: true
@@ -146,7 +146,6 @@ app.post('/login', (req, res) => {
                 }
             });
             if (!match) {
-                console.log('no user found');
                 res.render('login', {
                     layout: 'main',
                     noUser: true
@@ -162,6 +161,11 @@ app.post('/login', (req, res) => {
         });
 });
 
+app.get('/logout', function(req, res) {
+    req.session = null;
+    res.redirect('/login');
+});
+
 app.get('/petition', checkSessionUser, (req, res) => {
     res.render('petition', {
         layout: 'main',
@@ -173,16 +177,17 @@ app.get('/petition', checkSessionUser, (req, res) => {
 app.post('/petition', (req, res) => {
     let { signature } = req.body;
     let { first, last } = req.session.user;
-    console.log('first: ', first, ' last: ', last, 'signature: ', signature);
+    console.log('first: ', first, ' last: ', last);
     // CALL FUNCTION TO INSERT SIGNER INTO DB HERE
     database
         .newSigner(first, last, signature)
-        .then(({ rows }) => {
-            console.log('response: ', rows[0].id);
-            req.session.sigId = rows[0].id;
+        .then(response => {
+            console.log('response: ', response);
+            req.session.sigId = response.rows[0].id;
             res.redirect('/thanks');
         })
-        .catch(() => {
+        .catch(err => {
+            console.log(err);
             res.render('petition', {
                 layout: 'main',
                 error: true
@@ -191,7 +196,7 @@ app.post('/petition', (req, res) => {
 });
 
 // Thank you page
-app.get('/thanks', checkSessionUser, checkForSigId, (req, res) => {
+app.get('/thanks', checkForSigId, (req, res) => {
     database.getSigners().then(function(response) {
         let number = response.rows.length;
         let userSig;
@@ -205,7 +210,9 @@ app.get('/thanks', checkSessionUser, checkForSigId, (req, res) => {
         res.render('thanks', {
             layout: 'main',
             number,
-            userSig
+            userSig,
+            first: req.session.user.first,
+            last: req.session.user.last
         });
     });
 });
@@ -215,7 +222,9 @@ app.get('/signers', checkForSigId, (req, res) => {
     database.getSigners().then(function(response) {
         res.render('signers', {
             layout: 'main',
-            signers: response.rows
+            signers: response.rows,
+            first: req.session.user.first,
+            last: req.session.user.last
         });
     });
 });

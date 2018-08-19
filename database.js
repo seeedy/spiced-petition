@@ -7,7 +7,7 @@ module.exports.newSigner = function(first, last, sig) {
     // insert new signer, db.query returns a promise
     return db.query(
         'INSERT INTO signers (first, last, signature) VALUES($1, $2, $3) RETURNING id',
-        [first || null, last || null, sig || null]
+        [first || null, last || null, sig]
     );
 };
 
