@@ -18,7 +18,7 @@ module.exports.getSigners = function() {
 
 module.exports.newUser = function(first, last, email, pw) {
     return db.query(
-        'INSERT INTO users (first, last, email, password) VALUES($1, $2, $3, $4) RETURNING id',
+        'INSERT INTO users (first, last, email, password) VALUES($1, $2, $3, $4) RETURNING id, first, last',
         [first || null, last || null, email || null, pw || null]
     );
 };

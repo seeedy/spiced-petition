@@ -11,16 +11,24 @@
             <div id="error">Something went wrong! Try again!</div>
             {{/if }}
 
+            {{#if noUser }}
+            <div id="error">No user with this name. <a href="/registration">Please register!</a></div>
+            {{/if }}
+
+            {{#if wrongPass }}
+            <div id="error">You've entered the wrong password. Please try again!</div>
+            {{/if }}
+
             <div id="form-box">
 
                 <form id="login-form" method="POST" autocomplete="off">
-                    <input class="input-field" type="text" name="first" placeholder="email ..."/>
-                    <input class="input-field" type="text" name="last" placeholder="password ..."/><input type="submit" class="submit-button" value="login"/>
+                    <input class="input-field" type="text" name="email" placeholder="email ..."/>
+                    <input class="input-field" type="text" name="password" placeholder="password ..."/><input type="submit" class="submit-button" value="login"/>
                     <!-- put this in every form !!! -->
                     <input name="_csrf" value="{{csrfToken}}" type="hidden" />
                 </form>
 
-            
+
             </div>
         </div>
     </body>

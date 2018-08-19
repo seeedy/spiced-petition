@@ -39,7 +39,15 @@ const database = require('./database');
 const bcrypt = require('./bcrypt');
 
 // ************** MIDDLEWARE ***************************
-// function to check for session cookie
+function checkSessionUser(req, res, next) {
+    console.log('inside checkSessionUser', req.session);
+    if (!req.session.user) {
+        console.log(req.session.user);
+        res.redirect('/registration');
+    } else {
+        next();
+    }
+} // function to check for session cookie
 function checkForSigId(req, res, next) {
     console.log('inside checkForSigId', req.session);
     if (!req.session.sigId) {
@@ -49,14 +57,6 @@ function checkForSigId(req, res, next) {
     }
 }
 
-function checkSessionUser(req, res, next) {
-    console.log('inside checkSessionUser', req.session);
-    if (req.session.user) {
-        res.redirect('/petition');
-    } else {
-        next();
-    }
-}
 // log all requests that are received ***DELETE LATER***
 app.use(function logUrl(req, res, next) {
     console.log(req.url);
@@ -76,15 +76,14 @@ app.get('/registration', (req, res) => {
     });
 });
 
-app.post('/registration', checkSessionUser, (req, res) => {
+app.post('/registration', (req, res) => {
     let { first, last, email, password } = req.body;
-    console.log('req: ', first, last, email, password);
+    console.log('pw: ', password);
     bcrypt.hashPass(password).then(function(hashedPass) {
-        console.log('promise from hashPass resolved: ', hashedPass);
+        console.log('hashed: ', hashedPass);
         database
             .newUser(first, last, email, hashedPass)
-            .then((response, first, last) => {
-                console.log(response.rows[0].id);
+            .then(response => {
                 req.session.user = {
                     first: first,
                     last: last,
@@ -93,7 +92,6 @@ app.post('/registration', checkSessionUser, (req, res) => {
                 res.redirect('/petition');
             })
             .catch(err => {
-                console.log(err.constraint);
                 if (err.constraint == 'users_email_key') {
                     res.render('registration', {
                         layout: 'main',
@@ -109,7 +107,7 @@ app.post('/registration', checkSessionUser, (req, res) => {
     });
 });
 
-app.get('/login', checkSessionUser, (req, res) => {
+app.get('/login', (req, res) => {
     res.render('login', {
         layout: 'main'
     });
@@ -117,26 +115,64 @@ app.get('/login', checkSessionUser, (req, res) => {
 
 app.post('/login', (req, res) => {
     let { email, password } = req.body;
-    bcrypt.hashPass(password).then(hashedPass => {
-        database.getUsers().then(response => {
-            console.log('getUsers: ', response.rows);
+    console.log('pw: ', password);
+    database
+        .getUsers()
+        .then(response => {
+            let match = 0;
             response.rows.forEach(user => {
-                if (email == user.email && hashedPass == user.password) {
-                    console.log('logging in');
+                if (email == user.email) {
+                    match = 1;
+                    console.log('checking pw for ', user);
+                    bcrypt
+                        .checkPass(password, user.password)
+                        .then(doesMatch => {
+                            if (doesMatch) {
+                                console.log('right pw');
+                                req.session.user = {
+                                    first: user.first,
+                                    last: user.last,
+                                    userId: user.id
+                                };
+                                res.redirect('/petition');
+                            } else if (!doesMatch) {
+                                console.log('wrong pw');
+                                res.render('login', {
+                                    layout: 'main',
+                                    wrongPass: true
+                                });
+                            }
+                        });
                 }
             });
+            if (!match) {
+                console.log('no user found');
+                res.render('login', {
+                    layout: 'main',
+                    noUser: true
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.render('login', {
+                layout: 'main',
+                error: true
+            });
         });
-    });
 });
 
-app.get('/petition', (req, res) => {
+app.get('/petition', checkSessionUser, (req, res) => {
     res.render('petition', {
-        layout: 'main'
+        layout: 'main',
+        first: req.session.user.first,
+        last: req.session.user.last
     });
 });
 
 app.post('/petition', (req, res) => {
-    let { first, last, signature } = req.body;
+    let { signature } = req.body;
+    let { first, last } = req.session.user;
     console.log('first: ', first, ' last: ', last, 'signature: ', signature);
     // CALL FUNCTION TO INSERT SIGNER INTO DB HERE
     database
@@ -155,7 +191,7 @@ app.post('/petition', (req, res) => {
 });
 
 // Thank you page
-app.get('/thanks', checkForSigId, (req, res) => {
+app.get('/thanks', checkSessionUser, checkForSigId, (req, res) => {
     database.getSigners().then(function(response) {
         let number = response.rows.length;
         let userSig;

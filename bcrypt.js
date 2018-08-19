@@ -11,6 +11,6 @@ module.exports.hashPass = function(pass) {
     });
 };
 
-module.exports.checkPass = function(hash, pass) {
-    return compare(pass, hash).then(doesMatch => console.log(doesMatch));
+module.exports.checkPass = function(pass, hash) {
+    return compare(pass, hash);
 };
