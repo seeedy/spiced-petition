@@ -7,12 +7,16 @@
     <body>
         <div id="container">
 
+            <div class="sign-up">
+                Please sign up to support our petition.
+            </div>
+
             {{#if error }}
-            <div id="error">Something went wrong! Try again!</div>
+            <div class="error">Something went wrong! Try again!</div>
             {{/if }}
 
             {{#if duplicateMail }}
-            <div id="error">This email address is already registered. Please <a href="/login">log in</a></div>
+            <div class="error">This email address is already registered. Please <a href="/login">log in</a></div>
             {{/if }}
 
             <div id="form-box">
@@ -21,7 +25,7 @@
                     <input class="input-field" type="text" name="first" placeholder="first name ..."/>
                     <input class="input-field" type="text" name="last" placeholder="last name ..."/>
                     <input class="input-field" type="text" name="email" placeholder="email ..."/>
-                    <input class="input-field" type="text" name="password" placeholder="password ..."/><input type="submit" class="submit-button" value="sign up"/>
+                    <input class="input-field" type="password" name="password" placeholder="password ..." required/><input type="submit" class="submit-button" value="sign up"/>
                     <!-- put this in every form !!! -->
                     <input name="_csrf" value="{{csrfToken}}" type="hidden" />
                 </form>
@@ -30,6 +34,8 @@
                 If you're already a member, please <a href="/login">log in</a>
             </div>
             </div>
+
+
         </div>
     </body>
 </html>

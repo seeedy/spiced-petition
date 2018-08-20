@@ -114,3 +114,9 @@ app.disable();
 // on login error show error msg
 
 // middleware to check if UserId exists and only allow register/login routes
+
+// ****************** pt4 ***************
+
+app.get('/signers/:city', (req, res) => {
+    console.log(req.params.city);
+});

@@ -5,16 +5,17 @@
     </head>
     <body>
 
+        <div id="thanks-box">
+            <h2>Thank you for your signature!</h2>
 
-        <h1>Thank you for your signature!</h1>
+            <img src="{{userSig}}" alt="">
 
-        <img src="{{userSig}}" alt="">
+            <p>{{number}} other supporters have signed this petition</p>
 
-        <p>{{number}} other supporters have signed this petition</p>
+            <a href="/signers">Click here to see a list of all supporters</a>
+        </div>
 
-        <a href="/signers">Click here to see a list of all supporters</a>
-
-
-{{>logout }}
+        {{>logout }}
+        
     </body>
 </html>

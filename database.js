@@ -3,11 +3,11 @@ const spicedPg = require('spiced-pg');
 
 const db = spicedPg('postgres:postgres:postgres@localhost:5432/petition');
 
-module.exports.newSigner = function(first, last, sig) {
+module.exports.newSigner = function(first, last, sig, userId) {
     // insert new signer, db.query returns a promise
     return db.query(
-        'INSERT INTO signers (first, last, signature) VALUES($1, $2, $3) RETURNING id',
-        [first || null, last || null, sig]
+        'INSERT INTO signers (first, last, signature, user_id) VALUES($1, $2, $3, $4) RETURNING id',
+        [first || null, last || null, sig || null, userId || null]
     );
 };
 

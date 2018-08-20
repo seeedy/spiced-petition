@@ -52,9 +52,7 @@ function checkSessionUser(req, res, next) {
 function checkForSigId(req, res, next) {
     console.log('inside checkForSigId', req.session);
     if (!req.session.sigId) {
-        res.render('petition', {
-            layout: 'main'
-        });
+        res.redirect('/petition');
     } else {
         next();
     }
@@ -82,6 +80,7 @@ app.get('/registration', (req, res) => {
 app.post('/registration', (req, res) => {
     let { first, last, email, password } = req.body;
     console.log('pw: ', password);
+    // if (password != '') {
     bcrypt.hashPass(password).then(function(hashedPass) {
         console.log('hashed: ', hashedPass);
         database
@@ -108,6 +107,12 @@ app.post('/registration', (req, res) => {
                 }
             });
     });
+    // } else {
+    //     res.render('registration', {
+    //         layout: 'main',
+    //         error: true
+    //     });
+    // }
 });
 
 app.get('/login', (req, res) => {
@@ -176,13 +181,13 @@ app.get('/petition', checkSessionUser, (req, res) => {
 
 app.post('/petition', (req, res) => {
     let { signature } = req.body;
-    let { first, last } = req.session.user;
-    console.log('first: ', first, ' last: ', last);
+    let { first, last, userId } = req.session.user;
+    console.log('first: ', first, ' last: ', last, 'userId: ', userId);
     // CALL FUNCTION TO INSERT SIGNER INTO DB HERE
     database
-        .newSigner(first, last, signature)
+        .newSigner(first, last, signature, userId)
         .then(response => {
-            console.log('response: ', response);
+            // console.log('response: ', response);
             req.session.sigId = response.rows[0].id;
             res.redirect('/thanks');
         })
@@ -196,13 +201,13 @@ app.post('/petition', (req, res) => {
 });
 
 // Thank you page
-app.get('/thanks', checkForSigId, (req, res) => {
+app.get('/thanks', checkSessionUser, checkForSigId, (req, res) => {
     database.getSigners().then(function(response) {
         let number = response.rows.length;
         let userSig;
         response.rows.forEach(function(item) {
-            console.log('signature: ', item.signature);
-            console.log('sigId: ', req.session.sigId);
+            // console.log('signature: ', item.signature);
+            // console.log('sigId: ', req.session.sigId);
             if (item.id == req.session.sigId) {
                 userSig = item.signature;
             }
@@ -218,7 +223,7 @@ app.get('/thanks', checkForSigId, (req, res) => {
 });
 
 // Supporters page
-app.get('/signers', checkForSigId, (req, res) => {
+app.get('/signers', checkSessionUser, checkForSigId, (req, res) => {
     database.getSigners().then(function(response) {
         res.render('signers', {
             layout: 'main',
