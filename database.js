@@ -26,3 +26,9 @@ module.exports.newUser = function(first, last, email, pw) {
 module.exports.getUsers = function() {
     return db.query('SELECT * FROM users');
 };
+
+module.exports.checkSig = function(passedId) {
+    return db.query('SELECT id FROM signers WHERE user_id=$1', [
+        passedId || null
+    ]);
+};

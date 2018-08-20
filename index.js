@@ -139,8 +139,17 @@ app.post('/login', (req, res) => {
                                     last: user.last,
                                     userId: user.id
                                 };
-                                console.log(req.session);
-                                res.redirect('/petition');
+                                database
+                                    .checkSig(req.session.user.userId)
+                                    .then(response => {
+                                        if (response.rows[0].id) {
+                                            req.session.sigId =
+                                                response.rows[0].id;
+                                            res.redirect('/thanks');
+                                        } else {
+                                            res.redirect('/petition');
+                                        }
+                                    });
                             } else {
                                 res.render('login', {
                                     layout: 'main',
@@ -169,6 +178,14 @@ app.post('/login', (req, res) => {
 app.get('/logout', function(req, res) {
     req.session = null;
     res.redirect('/login');
+});
+
+app.get('/profile', function(req, res) {
+    res.render('profile', {
+        layout: 'main',
+        first: req.session.user.first,
+        last: req.session.user.last
+    });
 });
 
 app.get('/petition', checkSessionUser, (req, res) => {

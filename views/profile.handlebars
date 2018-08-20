@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+    </head>
+    <body>
+        <div id="container">
+
+            <div id="profile">
+                Now please tell us a bit about yourself.
+            </div>
+
+            <div id="form-box">
+
+                <form class="login-form" method="POST" autocomplete="off">
+                    <input class="input-field" type="text" name="age" placeholder="age ..."/>
+                    <input class="input-field" type="text" name="city" placeholder="city ..."/>
+                    <input class="input-field" type="text" name="url" placeholder="homepage ..."/>
+                    <input type="submit" class="submit-button" value="continue"/>
+                    <!-- put this in every form !!! -->
+                    <input name="_csrf" value="{{csrfToken}}" type="hidden" />
+                </form>
+
+
+            </div>
+
+        </div>
+        {{>logout }}
+    </body>
+</html>
