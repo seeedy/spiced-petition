@@ -5,7 +5,7 @@ const app = express();
 
 // setup express.handlebars
 const hb = require('express-handlebars');
-app.engine('handlebars', hb());
+app.engine('handlebars', hb({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
 // set up middleware (.use)
@@ -72,9 +72,7 @@ app.get('/', (req, res) => {
 // ***************** ROUTES *******************************
 
 app.get('/registration', (req, res) => {
-    res.render('registration', {
-        layout: 'main'
-    });
+    res.render('registration');
 });
 
 app.post('/registration', (req, res) => {
@@ -84,7 +82,7 @@ app.post('/registration', (req, res) => {
     bcrypt.hashPass(password).then(function(hashedPass) {
         console.log('hashed: ', hashedPass);
         database
-            .newUser(first, last, email, hashedPass)
+            .createNewUser(first, last, email, hashedPass)
             .then(response => {
                 req.session.user = {
                     first: first,
@@ -96,12 +94,10 @@ app.post('/registration', (req, res) => {
             .catch(err => {
                 if (err.constraint == 'users_email_key') {
                     res.render('registration', {
-                        layout: 'main',
                         duplicateMail: true
                     });
                 } else {
                     res.render('registration', {
-                        layout: 'main',
                         error: true
                     });
                 }
@@ -116,9 +112,7 @@ app.post('/registration', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login', {
-        layout: 'main'
-    });
+    res.render('login');
 });
 
 app.post('/login', (req, res) => {
@@ -152,7 +146,6 @@ app.post('/login', (req, res) => {
                                     });
                             } else {
                                 res.render('login', {
-                                    layout: 'main',
                                     wrongPass: true
                                 });
                             }
@@ -161,7 +154,6 @@ app.post('/login', (req, res) => {
             });
             if (!match) {
                 res.render('login', {
-                    layout: 'main',
                     noUser: true
                 });
             }
@@ -169,7 +161,6 @@ app.post('/login', (req, res) => {
         .catch(err => {
             console.log(err);
             res.render('login', {
-                layout: 'main',
                 error: true
             });
         });
@@ -182,15 +173,17 @@ app.get('/logout', function(req, res) {
 
 app.get('/profile', function(req, res) {
     res.render('profile', {
-        layout: 'main',
         first: req.session.user.first,
         last: req.session.user.last
     });
 });
 
+app.post('/profile', function(req, res) {
+    let { age, city, url } = req.body;
+});
+
 app.get('/petition', checkSessionUser, (req, res) => {
     res.render('petition', {
-        layout: 'main',
         first: req.session.user.first,
         last: req.session.user.last
     });
@@ -198,20 +191,18 @@ app.get('/petition', checkSessionUser, (req, res) => {
 
 app.post('/petition', (req, res) => {
     let { signature } = req.body;
-    let { first, last, userId } = req.session.user;
-    console.log('first: ', first, ' last: ', last, 'userId: ', userId);
+    let { userId } = req.session.user;
+    console.log('userId: ', userId);
     // CALL FUNCTION TO INSERT SIGNER INTO DB HERE
     database
-        .newSigner(first, last, signature, userId)
+        .createNewSig(signature, userId)
         .then(response => {
-            // console.log('response: ', response);
             req.session.sigId = response.rows[0].id;
             res.redirect('/thanks');
         })
         .catch(err => {
             console.log(err);
             res.render('petition', {
-                layout: 'main',
                 error: true
             });
         });
@@ -219,31 +210,37 @@ app.post('/petition', (req, res) => {
 
 // Thank you page
 app.get('/thanks', checkSessionUser, checkForSigId, (req, res) => {
-    database.getSigners().then(function(response) {
-        let number = response.rows.length;
-        let userSig;
-        response.rows.forEach(function(item) {
-            // console.log('signature: ', item.signature);
-            // console.log('sigId: ', req.session.sigId);
-            if (item.id == req.session.sigId) {
-                userSig = item.signature;
-            }
-        });
-        res.render('thanks', {
-            layout: 'main',
-            number,
-            userSig,
-            first: req.session.user.first,
-            last: req.session.user.last
-        });
-    });
+    database
+        .getSigners()
+        .then(function(response) {
+            let number = response.rows.length;
+            let userSig;
+            response.rows.forEach(function(elem) {
+                // console.log('elem_id: ', elem.sig_id);
+                // console.log('elem_sigId', elem.sig_id);
+                // console.log('session_sigId: ', req.session.sigId);
+                if (elem.sig_id == req.session.sigId) {
+                    userSig = elem.signature;
+                    console.log('userSig: ', userSig);
+                }
+            });
+            res.render('thanks', {
+                number,
+                userSig,
+                first: req.session.user.first,
+                last: req.session.user.last
+            });
+        })
+        .catch(err => console.log(err));
 });
 
 // Supporters page
 app.get('/signers', checkSessionUser, checkForSigId, (req, res) => {
     database.getSigners().then(function(response) {
+        console.log('Signers response: ', response.rows);
+        console.log('response.rows.user_first: ', response.rows[0].user_first);
+
         res.render('signers', {
-            layout: 'main',
             signers: response.rows,
             first: req.session.user.first,
             last: req.session.user.last

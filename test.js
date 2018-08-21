@@ -117,6 +117,17 @@ app.disable();
 
 // ****************** pt4 ***************
 
-app.get('/signers/:city', (req, res) => {
-    console.log(req.params.city);
-});
+// app.get('/signers/:city', (req, res) => {
+//     console.log(req.params.city);
+// });
+
+// ****************** pt5 **************
+
+// did user enter new pw
+// yes: hash and update user info with hash
+// no: update user info without pw
+// need 2 queries to update user and user_profiles table
+
+// on delete signature: delete sigId from session
+
+// URL displaying user based on id: /user/:id

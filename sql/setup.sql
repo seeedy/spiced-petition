@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS signers;
+DROP TABLE IF EXISTS user_profiles;
 DROP TABLE IF EXISTS users;
 
 
@@ -12,9 +13,14 @@ CREATE TABLE users(
 
 CREATE TABLE signers (
     id SERIAL PRIMARY KEY,
-    first VARCHAR(200) NOT NULL,
-    last VARCHAR(255) NOT NULL,
     signature TEXT NOT NULL,
     user_id INTEGER REFERENCES users(id) NOT NULL
-    -- bugfix: does not work with not null
 );
+
+CREATE TABLE user_profiles (
+    id SERIAL PRIMARY KEY,
+    age VARCHAR(100) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    user_id INTEGER REFERENCES users(id) NOT NULL
+)

@@ -6,7 +6,6 @@
     </head>
     <body>
 
-
         <div id="container">
             <p>Hello {{ first }},</p>
             <p>Rhabarber is nice...</p>
@@ -16,12 +15,7 @@
             <p>And put an end to pink supremacy! ;)</p>
             <p>Sign our petition NOW and help our noble cause</p>
 
-
-
-
-
             <div id="form-box">
-
                 <form method="POST" autocomplete="off">
                     <!-- <input class="input-field" type="text" name="first" placeholder="first name ..."/>
                     <input class="input-field" type="text" name="last" placeholder="last name ..."/> -->
@@ -31,16 +25,16 @@
                     <input type="submit" class="submit-button" value="submit"/>
                     <!-- put this in every form !!! -->
                     <input name="_csrf" value="{{csrfToken}}" type="hidden" />
-        </form>
-
-
+                </form>
             </div>
 
             {{#if error }}
             <div class="error">Please provide your signature to proceed!</div>
             {{/if }}
 
-            {{>logout }}
         </div>
+
+        {{>logout }}
+
     </body>
 </html>

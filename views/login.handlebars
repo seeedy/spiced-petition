@@ -7,8 +7,6 @@
     <body>
         <div id="container">
 
-
-
             <div id="form-box">
 
                 <form class="login-form" method="POST" autocomplete="off">
@@ -27,12 +25,14 @@
             {{/if }}
 
             {{#if noUser }}
-            <div class="error">No user with this email. <a href="/registration">Please register!</a></div>
+            <div class="error">No user with this email. </div>
             {{/if }}
 
             {{#if wrongPass }}
             <div class="error">You've entered the wrong password. Please try again!</div>
             {{/if }}
+
+            <a href="/registration">Register new user</a>
         </div>
     </body>
 </html>
