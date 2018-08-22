@@ -5,9 +5,9 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users(
     id SERIAL PRIMARY KEY,
-    first VARCHAR(200) NOT NULL,
-    last VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
+    first VARCHAR(100) NOT NULL,
+    last VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL
 );
 
@@ -19,8 +19,8 @@ CREATE TABLE signers (
 
 CREATE TABLE user_profiles (
     id SERIAL PRIMARY KEY,
-    age VARCHAR(100) NOT NULL,
-    city VARCHAR(100) NOT NULL,
-    url VARCHAR(255) NOT NULL,
+    age VARCHAR(100),
+    city VARCHAR(100),
+    url VARCHAR(200),
     user_id INTEGER REFERENCES users(id) NOT NULL
 )

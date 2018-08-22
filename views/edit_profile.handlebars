@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+    </head>
+    <body>
+        <div id="container">
+
+            <div id="edit-profile">
+                Edit your profile information:
+            </div>
+
+            <div id="form-box">
+
+                <form class="login-form" method="POST" autocomplete="off">
+                    <input class="input-field" id="first" type="text" name="first" value="{{ user_first }}"/>
+                    <label for="first">first name</label>
+                    <input class="input-field" id="last" type="text" name="last" value="{{ user_last }}"/>
+                    <label for="first">last name</label>
+
+                    <input class="input-field" id="email" type="text" name="email" value="{{ user_email }}"/>
+                    <label for="first">email</label>
+
+                    <input class="input-field" id="password" type="text" name="password" placeholder="*****"/>
+                    <label for="first">password</label>
+
+                    <input class="input-field" id="age" type="text" name="age" value="{{ user_age }}"/>
+                    <label for="first">age</label>
+
+                    <input class="input-field" id="city" type="text" name="city" value="{{ user_city }}"/>
+                    <label for="first">city</label>
+
+                    <input class="input-field" id="url" type="text" name="url" value="{{ user_url }}"/>
+                    <label for="first">homepage</label>
+
+                    <input type="submit" class="submit-button" value="update"/>
+                    <!-- put this in every form !!! -->
+                    <input name="_csrf" value="{{csrfToken}}" type="hidden" />
+                </form>
+
+            </div>
+
+        </div>
+
+        {{>logout }}
+
+    </body>
+</html>

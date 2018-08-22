@@ -1,48 +1,37 @@
-// setup express
 const express = require('express');
 const app = express();
-// const secrets = require('./secrets');
-
-// setup express.handlebars
+const secrets = require('./secrets.json');
 const hb = require('express-handlebars');
+const cookieSession = require('cookie-session');
+const database = require('./database');
+const bcrypt = require('./bcrypt');
+const csurf = require('csurf');
+
 app.engine('handlebars', hb({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
-
-// set up middleware (.use)
 app.use(express.static('public'));
 app.use(
     require('body-parser').urlencoded({
         extended: false
     })
 );
-
 app.use(require('cookie-parser')());
-
-const cookieSession = require('cookie-session');
 app.use(
     cookieSession({
         secret: 'stupid secret',
         maxAge: 1000 * 60 * 60 * 24 * 14
     })
 );
-
-const csurf = require('csurf');
 app.use(csurf());
 app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     next();
 });
 
-// module for db queries
-const database = require('./database');
-// encryption module
-const bcrypt = require('./bcrypt');
-
 // ************** MIDDLEWARE ***************************
 function checkSessionUser(req, res, next) {
-    console.log('inside checkSessionUser', req.session);
+    // console.log('inside checkSessionUser', req.session);
     if (!req.session.user) {
-        console.log(req.session.user);
         res.redirect('/registration');
     } else {
         next();
@@ -50,7 +39,7 @@ function checkSessionUser(req, res, next) {
 }
 
 function checkForSigId(req, res, next) {
-    console.log('inside checkForSigId', req.session);
+    // console.log('inside checkForSigId', req.session);
     if (!req.session.sigId) {
         res.redirect('/petition');
     } else {
@@ -77,10 +66,8 @@ app.get('/registration', (req, res) => {
 
 app.post('/registration', (req, res) => {
     let { first, last, email, password } = req.body;
-    console.log('pw: ', password);
     // if (password != '') {
     bcrypt.hashPass(password).then(function(hashedPass) {
-        console.log('hashed: ', hashedPass);
         database
             .createNewUser(first, last, email, hashedPass)
             .then(response => {
@@ -89,7 +76,7 @@ app.post('/registration', (req, res) => {
                     last: last,
                     userId: response.rows[0].id
                 };
-                res.redirect('/petition');
+                res.redirect('/profile');
             })
             .catch(err => {
                 if (err.constraint == 'users_email_key') {
@@ -166,27 +153,59 @@ app.post('/login', (req, res) => {
         });
 });
 
-app.get('/logout', function(req, res) {
+app.get('/logout', (req, res) => {
     req.session = null;
     res.redirect('/login');
 });
 
-app.get('/profile', function(req, res) {
+app.get('/profile', checkSessionUser, (req, res) => {
     res.render('profile', {
         first: req.session.user.first,
         last: req.session.user.last
     });
 });
 
-app.post('/profile', function(req, res) {
+app.post('/profile', (req, res) => {
     let { age, city, url } = req.body;
+    let userId = req.session.user.userId;
+    database.createUserProfile(age, city, url, userId).then(() => {
+        res.redirect('/petition');
+    });
+});
+
+app.get('/profile/edit', checkSessionUser, (req, res) => {
+    let userId = req.session.user.userId;
+    database.getProfileData(userId).then(response => {
+        let {
+            user_first,
+            user_last,
+            user_email,
+            user_age,
+            user_city,
+            user_url
+        } = response.rows[0];
+        res.render('edit_profile', {
+            user_first,
+            user_last,
+            user_email,
+            user_age,
+            user_city,
+            user_url,
+            first: req.session.user.first,
+            last: req.session.user.last
+        });
+    });
 });
 
 app.get('/petition', checkSessionUser, (req, res) => {
-    res.render('petition', {
-        first: req.session.user.first,
-        last: req.session.user.last
-    });
+    if (!req.session.sigId) {
+        res.render('petition', {
+            first: req.session.user.first,
+            last: req.session.user.last
+        });
+    } else {
+        res.redirect('thanks');
+    }
 });
 
 app.post('/petition', (req, res) => {
@@ -197,6 +216,7 @@ app.post('/petition', (req, res) => {
     database
         .createNewSig(signature, userId)
         .then(response => {
+            console.log('response from createNewSig', response);
             req.session.sigId = response.rows[0].id;
             res.redirect('/thanks');
         })
@@ -212,16 +232,15 @@ app.post('/petition', (req, res) => {
 app.get('/thanks', checkSessionUser, checkForSigId, (req, res) => {
     database
         .getSigners()
-        .then(function(response) {
+        .then(response => {
             let number = response.rows.length;
             let userSig;
-            response.rows.forEach(function(elem) {
+            response.rows.forEach(elem => {
                 // console.log('elem_id: ', elem.sig_id);
                 // console.log('elem_sigId', elem.sig_id);
                 // console.log('session_sigId: ', req.session.sigId);
                 if (elem.sig_id == req.session.sigId) {
                     userSig = elem.signature;
-                    console.log('userSig: ', userSig);
                 }
             });
             res.render('thanks', {
@@ -236,11 +255,19 @@ app.get('/thanks', checkSessionUser, checkForSigId, (req, res) => {
 
 // Supporters page
 app.get('/signers', checkSessionUser, checkForSigId, (req, res) => {
-    database.getSigners().then(function(response) {
-        console.log('Signers response: ', response.rows);
-        console.log('response.rows.user_first: ', response.rows[0].user_first);
-
+    database.getSigners().then(response => {
         res.render('signers', {
+            signers: response.rows,
+            first: req.session.user.first,
+            last: req.session.user.last
+        });
+    });
+});
+
+app.get('/signers/:userCity', checkSessionUser, (req, res) => {
+    database.getSignersByCity(req.params.userCity).then(response => {
+        res.render('signers_by_city', {
+            city: req.params.userCity,
             signers: response.rows,
             first: req.session.user.first,
             last: req.session.user.last
