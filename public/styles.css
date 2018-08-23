@@ -113,3 +113,12 @@ footer {
 footer a {
     margin-left: 15px;
 }
+#delete-sig input {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}

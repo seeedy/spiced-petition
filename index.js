@@ -123,16 +123,10 @@ app.post('/login', (req, res) => {
                                 database
                                     .checkSig(req.session.user.userId)
                                     .then(response => {
-                                        if (response.rows[0].id) {
-                                            req.session.sigId =
-                                                response.rows[0].id;
-                                            res.redirect('/thanks');
-                                        } else {
-                                            res.redirect('/petition');
-                                        }
+                                        req.session.sigId = response.rows[0].id;
+                                        res.redirect('/thanks');
                                     })
-                                    .catch(err => {
-                                        console.log('no sig found', err);
+                                    .catch(() => {
                                         res.redirect('/petition');
                                     });
                             } else {
@@ -208,14 +202,16 @@ app.post('/profile/edit', (req, res) => {
         if (password == '') {
             return database.updateUserNoPW(first, last, email, userId);
         } else {
-            let hashedPass = bcrypt.hashPass(password);
-            return database.updateUserWithPW(
-                first,
-                last,
-                email,
-                hashedPass,
-                userId
-            );
+            bcrypt.hashPass(password).then(response => {
+                let hashedPass = response;
+                return database.updateUserWithPW(
+                    first,
+                    last,
+                    email,
+                    hashedPass,
+                    userId
+                );
+            });
         }
     };
     Promise.all([
