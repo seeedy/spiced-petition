@@ -1,11 +1,18 @@
 const express = require('express');
 const app = express();
-const secrets = require('./secrets.json');
 const hb = require('express-handlebars');
 const cookieSession = require('cookie-session');
 const database = require('./database');
 const bcrypt = require('./bcrypt');
 const csurf = require('csurf');
+
+let secrets;
+
+if (process.env.secret) {
+    secrets = process.env.secret;
+} else {
+    secrets = require('./secrets.json');
+}
 
 app.engine('handlebars', hb({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
@@ -18,7 +25,7 @@ app.use(
 app.use(require('cookie-parser')());
 app.use(
     cookieSession({
-        secret: 'stupid secret',
+        secret: secrets.secret,
         maxAge: 1000 * 60 * 60 * 24 * 14
     })
 );
@@ -173,6 +180,8 @@ app.post('/profile', (req, res) => {
 
 app.get('/profile/edit', checkSessionUser, (req, res) => {
     let userId = req.session.user.userId;
+    let updated = req.query.updated;
+    console.log('updated', updated);
     database.getProfileData(userId).then(response => {
         let {
             user_first,
@@ -190,7 +199,8 @@ app.get('/profile/edit', checkSessionUser, (req, res) => {
             user_city,
             user_url,
             first: req.session.user.first,
-            last: req.session.user.last
+            last: req.session.user.last,
+            updated
         });
     });
 });
@@ -220,7 +230,8 @@ app.post('/profile/edit', (req, res) => {
     ])
         .then(() => {
             console.log('Profile updated!');
-            res.redirect('/profile/edit');
+            let str = encodeURIComponent('yes');
+            res.redirect('/profile/edit/?updated=' + str);
         })
         .catch(err => console.log('profile update error: ', err));
 });
@@ -239,8 +250,6 @@ app.get('/petition', checkSessionUser, (req, res) => {
 app.post('/petition', (req, res) => {
     let { signature } = req.body;
     let { userId } = req.session.user;
-    console.log('userId: ', userId);
-    // CALL FUNCTION TO INSERT SIGNER INTO DB HERE
     database
         .createNewSig(signature, userId)
         .then(response => {
@@ -321,4 +330,4 @@ app.get('/signers/:userCity', checkSessionUser, (req, res) => {
     });
 });
 
-app.listen(8080, () => console.log('listening...'));
+app.listen(process.env.PORT || 8080, () => console.log('listening...'));

@@ -5,9 +5,10 @@
     </head>
     <body>
 
-        <div id="thanks-box">
-            <h2>Thank you for your signature!</h2>
 
+
+        <div id="thanks-box">
+            <h2>Thank you for your signature, {{ first }}!</h2>
             <img src="{{userSig}}" alt="">
 
             <p>{{number}} supporters have signed this petition</p>
@@ -18,6 +19,10 @@
                 <!-- put this in every form !!! -->
                 <input name="_csrf" value="{{csrfToken}}" type="hidden" />
             </form>
+        </div>
+
+        <div id="harold">
+            <img src="/img/harold_thanks.jpg" alt="">
         </div>
 
         {{>footer }}

@@ -1,7 +1,15 @@
 // setup spiced-postgres module
 const spicedPg = require('spiced-pg');
+let dbUrl;
 
-const db = spicedPg('postgres:postgres:postgres@localhost:5432/petition');
+if (process.env.DATABASE_URL) {
+    dbUrl = process.env.DATABASE_URL;
+} else {
+    const secrets = require('./secrets.json');
+    dbUrl = secrets.dbUrl;
+}
+
+const db = spicedPg(dbUrl);
 
 module.exports.createNewSig = function(sig, userId) {
     return db.query(

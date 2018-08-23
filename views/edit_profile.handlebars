@@ -5,7 +5,7 @@
         <title></title>
     </head>
     <body>
-        <div id="container">
+        <div class="container">
 
             <div id="edit-profile">
                 Edit your profile information:
@@ -41,6 +41,12 @@
 
             </div>
 
+
+            {{#if updated}}
+            <div class="">
+                Profile updated!
+            </div>
+            {{/if }}
         </div>
 
         {{>footer }}
