@@ -27,7 +27,7 @@ module.exports.getSigners = function() {
                     FROM signers
                     JOIN users
                     ON signers.user_id = users.id
-                    JOIN user_profiles
+                    LEFT JOIN user_profiles
                     ON user_profiles.user_id = users.id
                     `);
 };
@@ -43,7 +43,7 @@ module.exports.getProfileData = function(userId) {
                             user_profiles.city AS user_city,
                             user_profiles.url AS user_url
                     FROM users
-                    JOIN user_profiles
+                    LEFT JOIN user_profiles
                     ON user_profiles.user_id = users.id
                     WHERE users.id = $1`,
         [userId || null]
@@ -121,5 +121,15 @@ module.exports.updateUserProfile = function(city, age, url, userId) {
         ON CONFLICT (user_id)
         DO UPDATE SET age = $1, city = $2, url = $3`,
         [city || null, age || null, url || null, userId]
+    );
+};
+
+module.exports.deleteSig = function(sigId) {
+    console.log('deleting sig');
+    return db.query(
+        `
+        DELETE FROM signers
+        WHERE id = $1`,
+        [sigId || null]
     );
 };

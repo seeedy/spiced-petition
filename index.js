@@ -246,6 +246,7 @@ app.post('/petition', (req, res) => {
         .then(response => {
             console.log('response from createNewSig', response);
             req.session.sigId = response.rows[0].id;
+            console.log('setting new sigId: ', req.session.sigId);
             res.redirect('/thanks');
         })
         .catch(err => {
@@ -279,6 +280,23 @@ app.get('/thanks', checkSessionUser, checkForSigId, (req, res) => {
             });
         })
         .catch(err => console.log(err));
+});
+
+app.post('/thanks', (req, res) => {
+    console.log(
+        'userId: ',
+        req.session.user.userId,
+        'sigId: ',
+        req.session.sigId
+    );
+    database
+        .deleteSig(req.session.sigId)
+        .then(response => {
+            console.log('after deleting: ', response);
+            req.session.sigId = null;
+            res.redirect('/petition');
+        })
+        .catch(err => console.log('error on deleting sig: ', err));
 });
 
 // Supporters page
