@@ -14,7 +14,7 @@ CREATE TABLE users(
 CREATE TABLE signers (
     id SERIAL PRIMARY KEY,
     signature TEXT NOT NULL,
-    user_id INTEGER REFERENCES users(id) NOT NULL
+    user_id INTEGER REFERENCES users(id) NOT NULL UNIQUE
 );
 
 CREATE TABLE user_profiles (
@@ -22,5 +22,5 @@ CREATE TABLE user_profiles (
     age VARCHAR(100),
     city VARCHAR(100),
     url VARCHAR(200),
-    user_id INTEGER REFERENCES users(id) NOT NULL
-)
+    user_id INTEGER REFERENCES users(id) NOT NULL UNIQUE
+);

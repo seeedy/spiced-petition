@@ -15,12 +15,12 @@
 
                 <form class="login-form" method="POST" autocomplete="off">
                     <input class="input-field" id="first" type="text" name="first" value="{{ user_first }}"/>
-                    <label for="first">first name</label>
+                    <label for="first">*first name</label>
                     <input class="input-field" id="last" type="text" name="last" value="{{ user_last }}"/>
-                    <label for="first">last name</label>
+                    <label for="first">*last name</label>
 
                     <input class="input-field" id="email" type="text" name="email" value="{{ user_email }}"/>
-                    <label for="first">email</label>
+                    <label for="first">*email</label>
 
                     <input class="input-field" id="password" type="text" name="password" placeholder="*****"/>
                     <label for="first">password</label>
@@ -43,7 +43,7 @@
 
         </div>
 
-        {{>logout }}
+        {{>footer }}
 
     </body>
 </html>

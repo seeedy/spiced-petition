@@ -130,6 +130,10 @@ app.post('/login', (req, res) => {
                                         } else {
                                             res.redirect('/petition');
                                         }
+                                    })
+                                    .catch(err => {
+                                        console.log('no sig found', err);
+                                        res.redirect('/petition');
                                     });
                             } else {
                                 res.render('login', {
@@ -195,6 +199,34 @@ app.get('/profile/edit', checkSessionUser, (req, res) => {
             last: req.session.user.last
         });
     });
+});
+
+app.post('/profile/edit', (req, res) => {
+    let { first, last, email, password, age, city, url } = req.body;
+    let { userId } = req.session.user;
+    const updateUser = () => {
+        if (password == '') {
+            return database.updateUserNoPW(first, last, email, userId);
+        } else {
+            let hashedPass = bcrypt.hashPass(password);
+            return database.updateUserWithPW(
+                first,
+                last,
+                email,
+                hashedPass,
+                userId
+            );
+        }
+    };
+    Promise.all([
+        updateUser(),
+        database.updateUserProfile(age, city, url, userId)
+    ])
+        .then(() => {
+            console.log('Profile updated!');
+            res.redirect('/profile/edit');
+        })
+        .catch(err => console.log('profile update error: ', err));
 });
 
 app.get('/petition', checkSessionUser, (req, res) => {

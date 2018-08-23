@@ -92,3 +92,34 @@ module.exports.createUserProfile = function(age, city, url, userId) {
         [age || null, city || null, url || null, userId || null]
     );
 };
+
+module.exports.updateUserNoPW = function(first, last, email, userId) {
+    return db.query(
+        `
+        UPDATE users
+        SET first = $1, last = $2, email = $3
+        WHERE id = $4`,
+        [first || null, last || null, email || null, userId]
+    );
+};
+
+module.exports.updateUserWithPW = function(first, last, email, pw, userId) {
+    return db.query(
+        `
+        UPDATE users
+        SET first = $1, last = $2, email = $3, password = $4
+        WHERE id = $5`,
+        [first || null, last || null, email || null, pw || null, userId]
+    );
+};
+
+module.exports.updateUserProfile = function(city, age, url, userId) {
+    return db.query(
+        `
+        INSERT INTO user_profiles (age, city, url, user_id)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (user_id)
+        DO UPDATE SET age = $1, city = $2, url = $3`,
+        [city || null, age || null, url || null, userId]
+    );
+};
