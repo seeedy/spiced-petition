@@ -10,7 +10,7 @@ const helmet = require('helmet');
 let secrets;
 
 if (process.env.secret) {
-    secrets = process.env.secret;
+    secrets = process.env;
 } else {
     secrets = require('./secrets.json');
 }
