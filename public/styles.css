@@ -24,7 +24,7 @@ header {
     background-position: top;
     width: 100%;
     height: 220px;
-    font-size: 45px;
+    font-size: 40px;
 }
 
 .container {
@@ -107,7 +107,7 @@ label {
     position: absolute;
     height: 120px;
     width: 100%;
-    background-image: url('img/fritz.jpg');
+    background-image: url('img/fritz.JPG');
     background-position: bottom;
 }
 footer {
