@@ -16,23 +16,24 @@
                     <input name="_csrf" value="{{csrfToken}}" type="hidden" />
                 </form>
 
+                {{#if error }}
+                <div class="error">Something went wrong! Try again!</div>
+                {{/if }}
 
+                {{#if noUser }}
+                <div class="error">No user with this email. </div>
+                {{/if }}
+
+                {{#if wrongPass }}
+                <div class="error">You've entered the wrong password. Please try again!</div>
+                {{/if }}
+
+                <a href="/registration">Register new user</a>
             </div>
 
 
-            {{#if error }}
-            <div class="error">Something went wrong! Try again!</div>
-            {{/if }}
 
-            {{#if noUser }}
-            <div class="error">No user with this email. </div>
-            {{/if }}
-
-            {{#if wrongPass }}
-            <div class="error">You've entered the wrong password. Please try again!</div>
-            {{/if }}
-
-            <a href="/registration">Register new user</a>
         </div>
+
     </body>
 </html>

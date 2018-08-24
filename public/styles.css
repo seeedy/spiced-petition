@@ -1,51 +1,46 @@
 * {
     box-sizing: border-box;
     margin: 0;
-    overflow: hidden;
 }
 
 body {
     text-align: center;
     font-family: 'Patrick Hand', sans-serif;
     position: relative;
-    font-size: 1.25em;
-    padding-bottom: 60px;
+    font-size: 1.5em;
+    padding-bottom: 40px;
 }
 
 header {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
-    text-transform: uppercase;
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
-        1px 1px 0 #000;
-    background-image: linear-gradient(
-        to right,
-        red,
-        orange,
-        yellow,
-        green,
-        blue,
-        indigo,
-        violet,
-        pink
-    );
+    font-family: 'Luckiest Guy', sans-serif;
+    color: red;
+    letter-spacing: 3px;
+    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white,
+        1px 1px 0 white;
+    background-image: url('img/fritz.jpg');
+    background-position: top;
     width: 100%;
-    height: 150px;
+    height: 220px;
+    font-size: 50px;
 }
-h1 {
-    font-size: 3rem;
-}
+
 .container {
+    position: relative;
+    width: 100%;
     margin-top: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 .container p {
-    margin-top: 10px;
+    margin-top: 5px;
 }
 #form-box {
-    width: 100%;
-    margin-top: 1rem;
+    width: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -93,35 +88,44 @@ label {
     background: teal;
     color: white;
 }
-#signers-box,
-#thanks-box {
-    margin-top: 1rem;
-}
+
 #thanks-box p {
     margin-top: 10px;
 }
-#harold {
-    position: relative;
-    left: 3%;
-    margin-top: 10px;
+.harold {
+    padding: 20px;
 }
+
 .signers p {
     display: inline;
     margin-right: 20px;
 }
 .error {
-    margin-top: 50px;
+    margin-top: 20px;
+}
+.bottom {
+    position: absolute;
+    height: 120px;
+    width: 100%;
+    background-image: url('img/fritz.jpg');
+    background-position: bottom;
 }
 footer {
-    position: absolute;
-    bottom: 0;
+    position: relative;
     width: 100%;
-    height: 60px;
+    height: 70px;
     text-align: center;
-    margin-top: 20px;
 }
 footer a {
     margin-left: 15px;
+}
+
+.footer-menu p {
+    color: red;
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white,
+        1px 1px 0 white;
 }
 #delete-sig input {
     background: none;

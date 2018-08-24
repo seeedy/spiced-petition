@@ -7,19 +7,21 @@
     <body>
         <div class="container">
 
-            <div class="sign-up">
-                Please sign up to support our petition.
-            </div>
 
-            {{#if error }}
-            <div class="error">Something went wrong! Try again!</div>
-            {{/if }}
-
-            {{#if duplicateMail }}
-            <div class="error">This email address is already registered. Please <a href="/login">log in</a></div>
-            {{/if }}
 
             <div id="form-box">
+
+                <div class="sign-up">
+                    Please sign up to support our petition.
+                </div>
+
+                {{#if error }}
+                <div class="error">Something went wrong! Try again!</div>
+                {{/if }}
+
+                {{#if duplicateMail }}
+                <div class="error">This email address is already registered. Please <a href="/login">log in</a></div>
+                {{/if }}
 
                 <form class="login-form" method="POST" autocomplete="off">
                     <input class="input-field" type="text" name="first" placeholder="first name ..."/>
@@ -38,5 +40,6 @@
 
 
         </div>
+
     </body>
 </html>

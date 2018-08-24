@@ -6,22 +6,26 @@
 <link rel="stylesheet" href="/styles.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Patrick+Hand" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Luckiest+Guy" rel="stylesheet">
 
 
 </head>
 
 
 <body>
+    {{>header }}
 
     <div class="wrapper">
-        {{>header }}
 
-        {{{body}}}
+    {{{body}}}
 
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="canvas.js"></script>    
+        <script type="text/javascript" src="canvas.js"></script>
     </div>
 
+    {{>footer }}
+
+    {{>bottom }}
 
 </body>
 </html>

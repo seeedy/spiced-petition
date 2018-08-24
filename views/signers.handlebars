@@ -6,23 +6,32 @@
     </head>
     <body>
 
-        <div id="signers-box">
-            <h2>Thanks to all supporters:</h2>
-                {{#signers }}
-                <div class="signers">
-                <p>
-                    <a href="https://{{ user_url }}">{{ user_first }} {{ user_last}}</a>
-                </p>
-                <p>{{ user_age }}</p>
-                <p>
-                    <a href="/signers/{{ user_city }}">{{ user_city }}</a>
-                </p>
-                </div>
-                {{/signers }}
+
+        <div class="container">
+
+            <div class="harold">
+                <img src="/img/harold_thanks.jpg" alt="">
+            </div>
+
+            <div id="form-box">
+                <h2>Thanks to all supporters:</h2>
+                    {{#signers }}
+                    <div class="signers">
+                    <p>
+                        <a href="https://{{ user_url }}">{{ user_first }} {{ user_last}}</a>
+                    </p>
+                    <p>{{ user_age }}</p>
+                    <p>
+                        <a href="/signers/{{ user_city }}">{{ user_city }}</a>
+                    </p>
+                    </div>
+                    {{/signers }}
+            </div>
+
+            
 
         </div>
 
-        {{>footer }}
 
     </body>
 </html>

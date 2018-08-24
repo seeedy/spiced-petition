@@ -1,6 +1,8 @@
 <footer>
-    <p>Logged in as {{ first }} {{ last }}.</p>
-    <a href="/logout">LOGOUT</a>
-    <a href="/profile/edit">MY PROFILE</a>
-    <a href="/petition">SIGN PETITION</a>
+    {{#if first }}
+        <p>Logged in as {{ first }} {{ last }}.</p>
+        <a href="/logout">LOGOUT</a>
+        <a href="/profile/edit">MY PROFILE</a>
+        <a href="/petition">SIGN PETITION</a>
+    {{/if }}
 </footer>
