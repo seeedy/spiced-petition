@@ -5,6 +5,7 @@ const cookieSession = require('cookie-session');
 const database = require('./database');
 const bcrypt = require('./bcrypt');
 const csurf = require('csurf');
+const helmet = require('helmet');
 
 let secrets;
 
@@ -34,6 +35,26 @@ app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     next();
 });
+
+// app.use(function(req, res, next) {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header(
+//         'Access-Control-Allow-Origin',
+//         'Origin, X-Requested-With, Content-Type, Accept'
+//     );
+//     next();
+// });
+
+// app.use(helmet());
+// app.use(
+//     helmet.contentSecurityPolicy({
+//         directives: {
+//             defaultSrc: ["'self'", 'code.jquery.com'],
+//             styleSrc: ["'self'", 'fonts.googleapis.com'],
+//             fontSrc: ['fonts.googleapis.com', 'fonts.gstatic.com']
+//         }
+//     })
+// );
 
 // ************** MIDDLEWARE ***************************
 function checkSessionUser(req, res, next) {
