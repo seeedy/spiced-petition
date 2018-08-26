@@ -7,37 +7,37 @@
     <body>
         <div class="container">
 
-            {{#if updated}}
-            <div class="">
-                Profile updated!
-            </div>
-            {{/if }}
-            <div id="edit-profile">
-                Edit your profile information:
-            </div>
-
             <div id="form-box">
+
+                {{#if updated}}
+                <div class="">
+                    Profile updated!
+                </div>
+                {{/if }}
+                <div id="edit-profile">
+                    Edit your profile information:
+                </div>
 
                 <form class="login-form" method="POST" autocomplete="off">
                     <input class="input-field" id="first" type="text" name="first" value="{{ user_first }}"/>
                     <label for="first">*first name</label>
                     <input class="input-field" id="last" type="text" name="last" value="{{ user_last }}"/>
-                    <label for="first">*last name</label>
+                    <label for="last">*last name</label>
 
                     <input class="input-field" id="email" type="text" name="email" value="{{ user_email }}"/>
-                    <label for="first">*email</label>
+                    <label for="email">*email</label>
 
                     <input class="input-field" id="password" type="password" name="password" placeholder="*****"/>
-                    <label for="first">password</label>
+                    <label for="password">password</label>
 
                     <input class="input-field" id="age" type="text" name="age" value="{{ user_age }}"/>
-                    <label for="first">age</label>
+                    <label for="age">age</label>
 
                     <input class="input-field" id="city" type="text" name="city" value="{{ user_city }}"/>
-                    <label for="first">city</label>
+                    <label for="city">city</label>
 
                     <input class="input-field" id="url" type="text" name="url" value="{{ user_url }}"/>
-                    <label for="first">homepage</label>
+                    <label for="url">homepage</label>
 
                     <input type="submit" class="submit-button" value="update"/>
                     <!-- put this in every form !!! -->

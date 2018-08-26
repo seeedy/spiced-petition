@@ -46,15 +46,15 @@ app.use((req, res, next) => {
 // });
 
 app.use(helmet());
-// app.use(
-//     helmet.contentSecurityPolicy({
-//         directives: {
-//             defaultSrc: ["'self'", 'code.jquery.com'],
-//             styleSrc: ["'self'", 'fonts.googleapis.com'],
-//             fontSrc: ['fonts.googleapis.com', 'fonts.gstatic.com']
-//         }
-//     })
-// );
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'", 'code.jquery.com'],
+            styleSrc: ["'self'", 'fonts.googleapis.com'],
+            fontSrc: ['fonts.googleapis.com', 'fonts.gstatic.com']
+        }
+    })
+);
 
 // ************** MIDDLEWARE ***************************
 function checkSessionUser(req, res, next) {
@@ -81,9 +81,8 @@ app.use(function logUrl(req, res, next) {
     next();
 });
 
-// redirect to petition start page ***CHANGE LATER***
 app.get('/', (req, res) => {
-    res.redirect('/petition');
+    res.redirect('/login');
 });
 
 // ***************** ROUTES *******************************

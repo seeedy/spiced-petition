@@ -5,7 +5,7 @@
         <title></title>
     </head>
     <body>
-        <div class="container">            
+        <div class="container">
 
             <div id="form-box">
 
@@ -15,8 +15,11 @@
 
                 <form class="login-form" method="POST" autocomplete="off">
                     <input class="input-field" type="text" name="age" placeholder="age ..."/>
+                    <label for="age">age</label>
                     <input class="input-field" type="text" name="city" placeholder="city ..."/>
+                    <label for="city">city</label>
                     <input class="input-field" type="text" name="url" placeholder="homepage ..."/>
+                    <label for="url">url</label>
                     <input type="submit" class="submit-button" value="continue"/>
                     <!-- put this in every form !!! -->
                     <input name="_csrf" value="{{csrfToken}}" type="hidden" />
