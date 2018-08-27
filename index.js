@@ -320,7 +320,7 @@ app.post('/thanks', (req, res) => {
     );
     database
         .deleteSig(req.session.sigId)
-        .then(response => {
+        .then(() => {
             req.session.sigId = null;
             res.redirect('/petition');
         })
