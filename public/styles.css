@@ -86,7 +86,7 @@ label {
     height: 60px;
     margin: 1rem auto;
     text-transform: uppercase;
-    border: 1px solid black;
+    border: 2px solid black;
     transition: 0.2s ease-in;
     border-radius: 5px;
 }
